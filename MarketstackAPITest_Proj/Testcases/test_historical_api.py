@@ -57,8 +57,9 @@ class TestHistoricalAPI:
     @pytest.mark.parametrize(
         "symbols, date_from, date_to",
         [("AAPL", "2025-02-06", "2025-02-11")])
-    def test_historical_ohlc_value_should_be_large_than_zero(self, symbols: str,
-                                                             date_from: str, date_to: str):
+    def test_historical_ohlc_value(self, symbols: str, date_from: str, date_to: str):
+        self.logger.info("[Descr]1.OHLC value should be larger than zero\
+        2.H value should be larger than or equal to L value")
         resp = self.apilib.get_stock_historical_data(
             symbols, date_from, date_to)
         self.logger.info(resp.url)
