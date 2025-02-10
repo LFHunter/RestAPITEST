@@ -3,13 +3,41 @@
 ## Overview
 This document outlines the test cases for validating the Marketstack historical data API.
 
-**Python Version** >= **3.12.2**
 
-**How to use:**
-```
-pip install -r requirement.txt    #install related package
+## Installation Guide
+
+### Prerequisites
+
+- Python 3.12.2 or higher
+- pip (Python package installer)
+
+### Installation Steps
+
+1. Clone this repository:
+
+   ```bash
+   git clone https://github.com/LFHunter/RestAPITEST.git
+   ```
+
+2. Navigate to the project directory:
+
+   ```bash
+   cd RestAPITEST
+   ```
+
+3. Install dependencies:
+
+   ```bash
+   pip install -r requirements.txt
+   ```
+
+## Usage
+
+Run the application using the following command:
+
+```bash
 export PYTHONPATH=/path/to/your_project
-pytest --html=report.html MarketstackAPITest_Proj/Testcases/test_historical_api.py   #run testcase
+pytest  --html=MarketstackAPITest_Proj/report.html  MarketstackAPITest_Proj/Testcases/test_historical_api.py
 ```
 **Log**: MarketstackAPITest_Proj/**%Y-%m-%d_%H%M_%S**_historical_data.log  
   
