@@ -7,7 +7,7 @@ class ValidateLib:
 
     def __init__(self, logger):
         self.logger = logger
-        self.logger.debug("Init ValidateLib")
+        self.logger.info("Init ValidateLib")
 
     def assert_data(self, actual: any, expect: any):
         default_error_msg = "[FAIL],\nactual: {actual}\nexpected: {expect}"
@@ -15,36 +15,45 @@ class ValidateLib:
             self.logger.error(default_error_msg.format(
                 actual=actual, expect=expect))
             assert False
+        self.logger.info("[PASS]")
         assert True
 
     def validate_ohlc_value(self, data_list: list):
-        error_flag = False
+        pass_flag = True
         for data in data_list:
-            price_list = ["open", "high", "low", "close", "volume"
-                          "adj_high", "adj_low", "adj_close", "adj_open", "adj_volume"]
-            date_symbol = f"{data['date'].split('T')[0],data['symbol']}"
-            error_price = list(filter(lambda x: x <= 0, price_list))
+            price_list = ["open", "high", "low", "close", "volume",
+                          "adj_high", "adj_low", "adj_close", "adj_open",
+                          "adj_volume"]
+            date_symbol = f"{data['date'].split('T')[0], data['symbol']}"
+            error_price = list(filter(lambda x: data[x] <= 0, price_list))
             if error_price:
                 self.logger.error(
                     f"{date_symbol}, data:{error_price} shouldn't less  than or equal to 0")
-                error_flag = True
-            if data["high"] < data["low"]:
+                pass_flag = False
+            if float(data["high"]) < float(data["low"]):
                 self.logger.error(f'{date_symbol},high price:{data["high"]} should large or\
                                   equal to low price:{data["low"]}')
-                error_flag = True
-            if data["adj_high"] < data["adj_low"]:
+                pass_flag = False
+            if float(data["adj_high"]) < float(data["adj_low"]):
                 self.logger.error(
                     f'{date_symbol},adj_high price:{data["adj_high"]} should large or\
                         equal to adj_low price:{data["adj_low"]}')
-                error_flag = True
-        assert error_flag
+                pass_flag = False
+
+            if pass_flag:
+                assert True
+                self.logger.info("[PASS], validate_ohlc_value")
+            else:
+                assert False
 
     def validate_json(self, validated_jsonschema: json, standard_jsonschema: json):
         try:
             validate(instance=validated_jsonschema, schema=standard_jsonschema)
-            return True, "[PASS], validate JsonSchema"
+            self.logger.info("[PASS], validate JsonSchema")
+            assert True
         except ValidationError as e:
-            return False, f"[FAIL], validate JsonSchema:{e.message}"
+            self.logger.error(f"[FAIL], validate JsonSchema:{e.message}")
+            assert False
 
 
 if __name__ == "__main__":
@@ -200,4 +209,4 @@ if __name__ == "__main__":
     }
     val_lib = ValidateLib(logger)
     print(val_lib.validate_json(test_pass_historical_data, historical_data_schema))
-    print(val_lib.validate_json(test_fail_historical_data, historical_data_schema))
+    # print(val_lib.validate_json(test_fail_historical_data, historical_data_schema))

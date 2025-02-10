@@ -1,5 +1,3 @@
-
-
 historical_data_schema = {
     "type": "object",
     "properties": {

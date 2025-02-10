@@ -1,12 +1,10 @@
 import datetime
-
 import pytest
-
 from Baselib.logger_manager import setup_logger
 from Baselib.validate_lib import ValidateLib
 from MarketstackAPITest_Proj.api_jsonschema import historical_data_schema
 from MarketstackAPITest_Proj.api_lib import APILib
-from MarketstackAPITest_Proj.config import log_config
+from MarketstackAPITest_Proj.config import log_config, api_access_key
 
 
 class TestHistoricalAPI:
@@ -15,13 +13,13 @@ class TestHistoricalAPI:
 
     @classmethod
     def setup_class(cls):
-        cls.logger.info("Initial Test")
+        cls.logger.info("|||||Initial TestHistoricalAPI Test|||||")
         cls.valib = ValidateLib(cls.logger)
-        cls.apilib = APILib(access_key="01df658e2b07051a3de1b54c4553c494")
+        cls.apilib = APILib(cls.logger, access_key=api_access_key)
 
     @classmethod
     def teardown_class(cls):
-        cls.logger.info("End Test")
+        cls.logger.info("|||||End TestHistoricalAPI Test|||||")
 
     def setup_method(self, method):
         self.logger.info(f"----starting {method.__name__} execution----")
@@ -30,7 +28,8 @@ class TestHistoricalAPI:
         self.logger.info(f"----end {method.__name__} execution----")
 
     def test_get_historical_data_with_fake_accesskey(self):
-        resp = self.apilib.get_stock_historical_data(
+        apilib = APILib(self.logger, access_key="fakeaccesskey")
+        resp = apilib.get_stock_historical_data(
             symbols="AAPL", date_from="2025-02-03", date_to="2025-03-07")
         expected_json = {
             "error": {
