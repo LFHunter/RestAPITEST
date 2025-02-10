@@ -19,7 +19,7 @@ log_config = {
         },
         'file': {
             'class': 'logging.FileHandler',
-            'filename': f'{formatted_now}_historical_data.log',
+            'filename': f'MarketstackAPITest_Proj/{formatted_now}_historical_data.log',
             'formatter': 'standard',
             'level': 'DEBUG'
         }
