@@ -1,0 +1,9 @@
+.git
+.pytest_cache
+.venv
+.vscode
+.vscode
+opennet_api_venv
+*.html
+*.log
+assets

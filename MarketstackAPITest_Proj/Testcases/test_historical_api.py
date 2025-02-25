@@ -1,6 +1,6 @@
 import datetime
 import pytest
-from Baselib.logger_manager import setup_logger
+import logging
 from Baselib.validate_lib import ValidateLib
 from MarketstackAPITest_Proj.api_jsonschema import historical_data_schema
 from MarketstackAPITest_Proj.api_lib import APILib
@@ -9,7 +9,7 @@ from MarketstackAPITest_Proj.config import log_config, api_access_key
 
 class TestHistoricalAPI:
     now = datetime.datetime.now()
-    logger = setup_logger(log_config, loggername="historical_logger")
+    logger = logging.getLogger(__name__)
 
     @classmethod
     def setup_class(cls):
