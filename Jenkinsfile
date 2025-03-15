@@ -9,8 +9,10 @@ pipeline {
         stage('Setup and Run Tests') {
             parallel {
                 stage('Test 1') {
-                    agent { docker { image "python:${env.PYTHON_VERSION }"} }
+                    agent { docker { image "python:${env.PYTHON_VERSION }"
+                    args '--entrypoint /bin/sh'} }
                     steps {
+                        sh 'apt-get update && apt-get install -y git'
                         echo '=====Pull Repository====='
                         git branch: 'main', url: 'https://github.com/LFHunter/RestAPITEST.git'
                         script {
@@ -20,8 +22,10 @@ pipeline {
                     }
                 }
                 stage('Test 2') {
-                    agent { docker { image "python:${env.PYTHON_VERSION }"} }
+                    agent { docker { image "python:${env.PYTHON_VERSION }"
+                    args '--entrypoint /bin/sh'} }
                     steps {
+                        sh 'apt-get update && apt-get install -y git'
                         echo '=====Pull Repository====='
                         git branch: 'main', url: 'https://github.com/LFHunter/RestAPITEST.git'
                         script {
@@ -31,8 +35,10 @@ pipeline {
                     }
                 }
                 stage('Test 3') {
-                    agent { docker { image "python:${env.PYTHON_VERSION }"} }
+                    agent { docker { image "python:${env.PYTHON_VERSION }"
+                    args '--entrypoint /bin/sh'} }
                     steps {
+                        sh 'apt-get update && apt-get install -y git'
                         echo '=====Pull Repository====='
                         git branch: 'main', url: 'https://github.com/LFHunter/RestAPITEST.git'
                         script {
