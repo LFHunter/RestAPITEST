@@ -9,9 +9,9 @@ pipeline {
         stage('Checkout Repository') {
             steps {
                 echo '===== Pulling Repository ====='
-                dir("${env.WORKSPACE}") {
-                git branch: 'main', url: 'https://github.com/LFHunter/RestAPITEST.git'
-                }
+                checkout([$class: 'GitSCM',
+                ranches: [[name: '*/main']],
+                userRemoteConfigs: [[url: 'https://github.com/LFHunter/RestAPITEST.git']]])
             }
         }
         stage('Setup and Run Tests') {
