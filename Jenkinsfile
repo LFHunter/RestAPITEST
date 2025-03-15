@@ -18,7 +18,8 @@ pipeline {
         stage('Setup and Run Tests') {
             parallel {
                 stage('Test 1') {
-                    agent { docker { image "python:${env.PYTHON_VERSION }" args "-v $WORKSPACE:$WORKSPACE" } }
+                    agent { docker { image "python:${env.PYTHON_VERSION }"
+                    args "-v $WORKSPACE:$WORKSPACE" } }
                     steps {
                         // sh 'apt-get update && apt-get install -y git'
                         // echo '=====Pull Repository====='
@@ -36,7 +37,8 @@ pipeline {
                     }
                 }
                 stage('Test 2') {
-                    agent { docker { image "python:${env.PYTHON_VERSION }" args "-v $WORKSPACE:$WORKSPACE" } }
+                    agent { docker { image "python:${env.PYTHON_VERSION }"
+                    args "-v $WORKSPACE:$WORKSPACE" } }
                     steps {
                         // sh 'apt-get update && apt-get install -y git'
                         // echo '=====Pull Repository====='
@@ -54,7 +56,8 @@ pipeline {
                     }
                 }
                 stage('Test 3') {
-                    agent { docker { image "python:${env.PYTHON_VERSION }" args "-v $WORKSPACE:$WORKSPACE" } }
+                    agent { docker { image "python:${env.PYTHON_VERSION }"
+                    args "-v $WORKSPACE:$WORKSPACE" } }
                     steps {
                         // sh 'apt-get update && apt-get install -y git'
                         // echo '=====Pull Repository====='
