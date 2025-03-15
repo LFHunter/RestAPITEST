@@ -8,6 +8,8 @@ pipeline {
     stages {
         stage('Checkout Repository') {
             steps {
+                echo '===== Cleaning old workspace ====='
+                deleteDir()  // 清空 workspace
                 echo '===== Pulling Repository ====='
                 checkout([$class: 'GitSCM',
                 ranches: [[name: '*/main']],
