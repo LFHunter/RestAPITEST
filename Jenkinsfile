@@ -6,6 +6,12 @@ pipeline {
     }
 
     stages {
+        stage('Checkout Repository') {
+            steps {
+                echo '===== Pulling Repository ====='
+                git branch: 'main', url: 'https://github.com/LFHunter/RestAPITEST.git'
+            }
+        }
         stage('Setup and Run Tests') {
             parallel {
                 stage('Test 1') {
