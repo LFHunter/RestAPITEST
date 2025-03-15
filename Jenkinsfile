@@ -1,5 +1,7 @@
 pipeline {
-    agent { label 'api-test-agent' }
+    agent {
+        label 'api-test-agent'
+    }
     environment {
         VENV_PATH = "venv"
     }
@@ -7,7 +9,11 @@ pipeline {
         stage('Run API Tests in Parallel') {
             parallel {
                 stage('Test Env 1') {
-                    agent { docker { image 'python:3.12' } }
+                    agent {
+                        docker {
+                            image 'python:3.12'
+                        }
+                    }
                     steps {
                         echo 'Pull Repository'
                         checkout scm
@@ -26,7 +32,11 @@ pipeline {
                     }
                 }
                 stage('Test Env 2') {
-                    agent { docker { image 'python:3.12' } }
+                    agent {
+                        docker {
+                            image 'python:3.12'
+                        }
+                    }
                     steps {
                         echo 'Pull Repository'
                         checkout scm
@@ -44,23 +54,12 @@ pipeline {
                         '''
                     }
                 }
-
             }
         }
-    },
+    }
     stage('Publish Allure Report') {
         steps {
-        allure includeProperties: false, jdk: '', results: [[path: 'reports/allure_results']]
+            allure includeProperties: false, jdk: '', results: [[path: 'reports/allure_results']]
+        }
     }
 }
-
-}
-
-
-
-
-
-
-
-
-
