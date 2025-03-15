@@ -11,9 +11,7 @@ pipeline {
                 echo '===== Cleaning old workspace ====='
                 deleteDir()  // 清空 workspace
                 echo '===== Pulling Repository ====='
-                checkout([$class: 'GitSCM',
-                ranches: [[name: '*/main']],
-                userRemoteConfigs: [[url: 'https://github.com/LFHunter/RestAPITEST.git']]])
+                git branch: 'main', url: 'https://github.com/LFHunter/RestAPITEST.git'
             }
         }
         stage('Setup and Run Tests') {
