@@ -20,7 +20,7 @@ pipeline {
                     }
                 }
                 stage('Test 2') {
-                    agent { docker { image 'python:3.9' } }
+                    agent { docker { image "python:${env.PYTHON_VERSION }"} }
                     steps {
                         echo '=====Pull Repository====='
                         git branch: 'main', url: 'https://github.com/LFHunter/RestAPITEST.git'
@@ -31,7 +31,7 @@ pipeline {
                     }
                 }
                 stage('Test 3') {
-                    agent { docker { image 'python:3.9' } }
+                    agent { docker { image "python:${env.PYTHON_VERSION }"} }
                     steps {
                         echo '=====Pull Repository====='
                         git branch: 'main', url: 'https://github.com/LFHunter/RestAPITEST.git'
