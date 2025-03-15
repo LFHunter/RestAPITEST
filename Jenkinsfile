@@ -1,54 +1,66 @@
 pipeline {
     agent { label 'api-test-agent' }
     environment {
-        VENV_PATH = "~/venv"
+        VENV_PATH = "venv"
     }
     stages {
-        stage('Checkout') {
-            steps {
-                checkout scm
-            }
-        }
-
-        stage('Setup Python Environment') {
-            steps {
-                sh '''
-                python3 -m venv ${VENV_PATH}
-                source ${VENV_PATH}/bin/activate
-                pip install -r requirements.txt
-                '''
-            }
-        }
-
-        stage('Run Tests') {
+        stage('Run API Tests in Parallel') {
             parallel {
-                stage('Unit Test') {
+                stage('Test Env 1') {
+                    agent { docker { image 'python:3.12' } }
                     steps {
+                        echo 'Pull Repository'
+                        checkout scm
+                        echo 'Install python library'
+                        sh '''
+                            python3 -m venv ${VENV_PATH}
+                            source ${VENV_PATH}/bin/activate
+                            pip install -r requirements.txt
+                           '''
+                        echo 'Run Test'
                         sh '''
                         source ${VENV_PATH}/bin/activate
                         pytest MarketstackAPITest_Proj/Testcases/test_historical_api.py \
-                        --junitxml=report_unit.xml
+                        --alluredir=reports/allure_results
                         '''
                     }
                 }
-                stage('Integration Test') {
+                stage('Test Env 2') {
+                    agent { docker { image 'python:3.12' } }
                     steps {
+                        echo 'Pull Repository'
+                        checkout scm
+                        echo 'Install python library'
+                        sh '''
+                            python3 -m venv ${VENV_PATH}
+                            source ${VENV_PATH}/bin/activate
+                            pip install -r requirements.txt
+                           '''
+                        echo 'Run Test'
                         sh '''
                         source ${VENV_PATH}/bin/activate
                         pytest MarketstackAPITest_Proj/Testcases/test_historical_api.py \
-                        --junitxml=report_unit.xml
+                        --alluredir=reports/allure_results
                         '''
                     }
                 }
+
             }
         }
-
-
-    }
-    post {
-        always {
-            archiveArtifacts artifacts: '**/*.xml', fingerprint: true
-            junit '**/*.xml'
-        }
+    },
+    stage('Publish Allure Report') {
+        steps {
+        allure includeProperties: false, jdk: '', results: [[path: 'reports/allure_results']]
     }
 }
+
+}
+
+
+
+
+
+
+
+
+
