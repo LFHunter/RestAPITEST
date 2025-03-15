@@ -18,12 +18,12 @@ pipeline {
                     agent { docker { image "python:${env.PYTHON_VERSION }"
                     } }
                     steps {
-                        sh 'apt-get update && apt-get install -y git'
-                        echo '=====Pull Repository====='
-                        echo "${env.WORKSPACE}"
-                        dir("${env.WORKSPACE}") {
-                        git branch: 'main', url: 'https://github.com/LFHunter/RestAPITEST.git'
-                        }
+                        // sh 'apt-get update && apt-get install -y git'
+                        // echo '=====Pull Repository====='
+                        // echo "${env.WORKSPACE}"
+                        // dir("${env.WORKSPACE}") {
+                        // git branch: 'main', url: 'https://github.com/LFHunter/RestAPITEST.git'
+                        // }
                         script {
                             setupPyEnv(${ env.VENV_PATH })
                             runPytest()
@@ -34,12 +34,12 @@ pipeline {
                     agent { docker { image "python:${env.PYTHON_VERSION }"
                     args '--entrypoint /bin/sh'} }
                     steps {
-                        sh 'apt-get update && apt-get install -y git'
-                        echo '=====Pull Repository====='
-                        echo "${env.WORKSPACE}"
-                        dir("${env.WORKSPACE}") {
-                        git branch: 'main', url: 'https://github.com/LFHunter/RestAPITEST.git'
-                        }
+                        // sh 'apt-get update && apt-get install -y git'
+                        // echo '=====Pull Repository====='
+                        // echo "${env.WORKSPACE}"
+                        // dir("${env.WORKSPACE}") {
+                        // git branch: 'main', url: 'https://github.com/LFHunter/RestAPITEST.git'
+                        // }
                         script {
                             setupPyEnv(${ env.VENV_PATH })
                             runPytest()
@@ -50,12 +50,12 @@ pipeline {
                     agent { docker { image "python:${env.PYTHON_VERSION }"
                     args '--entrypoint /bin/sh'} }
                     steps {
-                        sh 'apt-get update && apt-get install -y git'
-                        echo '=====Pull Repository====='
-                        echo "${env.WORKSPACE}"
-                        dir("${env.WORKSPACE}") {
-                        git branch: 'main', url: 'https://github.com/LFHunter/RestAPITEST.git'
-                        }
+                        // sh 'apt-get update && apt-get install -y git'
+                        // echo '=====Pull Repository====='
+                        // echo "${env.WORKSPACE}"
+                        // dir("${env.WORKSPACE}") {
+                        // git branch: 'main', url: 'https://github.com/LFHunter/RestAPITEST.git'
+                        // }
                         script {
                             setupPyEnv(${ env.VENV_PATH })
                             runPytest()
