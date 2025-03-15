@@ -1,62 +1,45 @@
 pipeline {
-    agent {
-        label 'api-test-agent'
-    }
+    agent any
     environment {
-        VENV_PATH = "venv"
+        PYTHON_VERSION = '3.12'
+        VENV_PATH = 'venv'
     }
+
     stages {
-        stage('Run API Tests in Parallel') {
-            steps {
-                script {
-                    parallel(
-                        "Test Env 1" : {
-                            node {
-                                docker.image('python:3.12').inside {
-                                    stage('Setup & Run Test Env 1') {
-                                        echo 'Pull Repository'
-                                        checkout scm
-                                        echo 'Install python library'
-                                        sh '''
-                                            python3 -m venv "${env.VENV_PATH}"
-                                            source "${env.VENV_PATH}/bin/activate"
-                                            pip install -r requirements.txt
-                                        '''
-                                        echo 'Run Test'
-                                        sh '''
-                                            mkdir -p reports/allure_results
-                                            source "${env.VENV_PATH}/bin/activate"
-                                            pytest MarketstackAPITest_Proj/Testcases/test_historical_api.py \
-                                            --alluredir=reports/allure_results
-                                        '''
-                                    }
-                                }
-                            }
-                        },
-                        "Test Env 2" : {
-                            node {
-                                docker.image('python:3.12').inside {
-                                    stage('Setup & Run Test Env 2') {
-                                        echo 'Pull Repository'
-                                        checkout scm
-                                        echo 'Install python library'
-                                        sh '''
-                                            python3 -m venv "${env.VENV_PATH}"
-                                            source "${env.VENV_PATH}/bin/activate"
-                                            pip install -r requirements.txt
-                                        '''
-                                        echo 'Run Test'
-                                        sh '''
-                                            mkdir -p reports/allure_results
-                                            source "${env.VENV_PATH}/bin/activate"
-                                            pytest MarketstackAPITest_Proj/Testcases/test_historical_api.py \
-                                            --alluredir=reports/allure_results
-                                        '''
-                                    }
-                                }
-                            }
+        stage('Setup and Run Tests') {
+            parallel {
+                stage('Test 1') {
+                    agent { docker { image "python:${env.PYTHON_VERSION }"} }
+                    steps {
+                        echo '=====Pull Repository====='
+                        git branch: 'main', url: 'https://github.com/LFHunter/RestAPITEST.git'
+                        script {
+                            setupPyEnv(${ env.VENV_PATH })
+                            runPytest()
                         }
-                    )
+                    }
+                }
+                stage('Test 2') {
+                    agent { docker { image 'python:3.9' } }
+                    steps {
+                        echo '=====Pull Repository====='
+                        git branch: 'main', url: 'https://github.com/LFHunter/RestAPITEST.git'
+                        script {
+                            setupPyEnv(${ env.VENV_PATH })
+                            runPytest()
+                        }
+                    }
+                }
+                stage('Test 3') {
+                    agent { docker { image 'python:3.9' } }
+                    steps {
+                        echo '=====Pull Repository====='
+                        git branch: 'main', url: 'https://github.com/LFHunter/RestAPITEST.git'
+                        script {
+                            setupPyEnv(${ env.VENV_PATH })
+                            runPytest()
+                        }
+                    }
                 }
             }
         }
@@ -66,10 +49,27 @@ pipeline {
             }
         }
     }
+
     post {
         always {
-            echo 'Cleaning up virtual environment'
-            sh 'rm -rf "${env.VENV_PATH}"'
+            echo 'All tests completed.'
         }
     }
+}
+
+def setupPyEnv(venvpath) {
+    sh """
+      echo ====Setting up Env =====
+      python3 -m venv ${venvpath}
+      source ${venvpath}/bin/activate
+      mkdir -p reports/allure_results
+      pip3 install -r requirements.txt
+    """
+}
+def runPytest() {
+    sh '''
+           mkdir -p reports/allure_results
+           pytest MarketstackAPITest_Proj/Testcases/test_historical_api.py \
+           --alluredir=reports/allure_results
+    '''
 }
