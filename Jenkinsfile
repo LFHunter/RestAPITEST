@@ -12,13 +12,13 @@ pipeline {
                 deleteDir()  // 清空 workspace
                 echo '===== Pulling Repository ====='
                 git branch: 'main', url: 'https://github.com/LFHunter/RestAPITEST.git'
+                sh 'ls -lah'
             }
         }
         stage('Setup and Run Tests') {
             parallel {
                 stage('Test 1') {
-                    agent { docker { image "python:${env.PYTHON_VERSION }"
-                    } }
+                    agent { docker { image "python:${env.PYTHON_VERSION }" args "-v $WORKSPACE:$WORKSPACE" } }
                     steps {
                         // sh 'apt-get update && apt-get install -y git'
                         // echo '=====Pull Repository====='
@@ -26,15 +26,17 @@ pipeline {
                         // dir("${env.WORKSPACE}") {
                         // git branch: 'main', url: 'https://github.com/LFHunter/RestAPITEST.git'
                         // }
+                        dir(env.WORKSPACE) {
+                            sh 'ls -lah'
+                        }
                         script {
-                            setupPyEnv(${ env.VENV_PATH })
+                            setupPyEnv(env.VENV_PATH)
                             runPytest()
                         }
                     }
                 }
                 stage('Test 2') {
-                    agent { docker { image "python:${env.PYTHON_VERSION }"
-                    args '--entrypoint /bin/sh'} }
+                    agent { docker { image "python:${env.PYTHON_VERSION }" args "-v $WORKSPACE:$WORKSPACE" } }
                     steps {
                         // sh 'apt-get update && apt-get install -y git'
                         // echo '=====Pull Repository====='
@@ -42,15 +44,17 @@ pipeline {
                         // dir("${env.WORKSPACE}") {
                         // git branch: 'main', url: 'https://github.com/LFHunter/RestAPITEST.git'
                         // }
+                        dir(env.WORKSPACE) {
+                            sh 'ls -lah'
+                        }
                         script {
-                            setupPyEnv(${ env.VENV_PATH })
+                            setupPyEnv(env.VENV_PATH)
                             runPytest()
                         }
                     }
                 }
                 stage('Test 3') {
-                    agent { docker { image "python:${env.PYTHON_VERSION }"
-                    args '--entrypoint /bin/sh'} }
+                    agent { docker { image "python:${env.PYTHON_VERSION }" args "-v $WORKSPACE:$WORKSPACE" } }
                     steps {
                         // sh 'apt-get update && apt-get install -y git'
                         // echo '=====Pull Repository====='
@@ -58,8 +62,11 @@ pipeline {
                         // dir("${env.WORKSPACE}") {
                         // git branch: 'main', url: 'https://github.com/LFHunter/RestAPITEST.git'
                         // }
+                        dir(env.WORKSPACE) {
+                            sh 'ls -lah'
+                        }
                         script {
-                            setupPyEnv(${ env.VENV_PATH })
+                            setupPyEnv(env.VENV_PATH)
                             runPytest()
                         }
                     }
