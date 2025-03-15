@@ -1,5 +1,5 @@
 pipeline {
-    agent any
+    agent { label 'MasterNode' }
     environment {
         PYTHON_VERSION = '3.12'
         VENV_PATH = 'venv'
