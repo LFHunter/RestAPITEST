@@ -77,13 +77,9 @@ pipeline {
 def runDockerTest(envName) {
     sh """
         echo "Running tests in ${envName}..."
-
-
         mkdir -p ${CONTAINER_REPORTS}/${envName}
-
-
         docker run --rm \
-            -v ${pwd}:/app \   # 掛載 Jenkins 拉取的代碼到 Docker 容器
+            -v ${pwd}:/app \
             -v ${pwd}/${CONTAINER_REPORTS}/${envName}:/app/reports \
             ${IMAGE_NAME}
 
