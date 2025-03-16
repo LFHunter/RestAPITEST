@@ -5,6 +5,7 @@ pipeline {
         REPO_URL = "https://github.com/LFHunter/RestAPITEST.git"
         IMAGE_NAME = "api-test-env"
         CONTAINER_REPORTS = "allure-reports"
+        PATH = "/usr/local/bin:${env.PATH}"
     }
 
     stages {
@@ -21,6 +22,12 @@ pipeline {
                 script {
                     git branch: 'main', url: REPO_URL
                 }
+            }
+        }
+         stage('Check Allure') {
+            steps {
+                sh 'which allure'
+                sh 'allure --version'
             }
         }
 
