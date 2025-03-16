@@ -79,13 +79,13 @@ pipeline {
 def runDockerTest(envName) {
     sh """
         echo "Running tests in ${envName}..."
-        mkdir -p ${WORKSPACE}/${CONTAINER_REPORTS}/${envName}
+        mkdir -p ${HOST_WORKSPACE}/${CONTAINER_REPORTS}/${envName}
         pwd
         ls -l
         chmod -R 777 ${WORKSPACE}
         docker run --rm \
-            -v ${WORKSPACE}:/app \
-            -v ${WORKSPACE}/${CONTAINER_REPORTS}/${envName}:/app/reports \
+            -v ${HOST_WORKSPACE}:/app \
+            -v ${HOST_WORKSPACE}/${CONTAINER_REPORTS}/${envName}:/app/reports \
             ${IMAGE_NAME}
 
         echo "Tests in ${envName} completed."
