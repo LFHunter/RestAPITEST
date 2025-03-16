@@ -24,7 +24,6 @@ RUN pip3 install -r requirements.txt
 # 默认命令（根据需要修改）
 # CMD pytest --html=MarketstackAPITest_Proj/report.html MarketstackAPITest_Proj/Testcases/test_historical_api.py
 ENV PYTHONPATH=/app
-CMD ls /app
 CMD ls /app && echo 'test123' && pwd && ls -l && pytest --alluredir=reports MarketstackAPITest_Proj/Testcases/test_historical_api.py
 
 
