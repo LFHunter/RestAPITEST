@@ -1,5 +1,5 @@
 
-FROM python:3.12
+FROM python:3.11
 
 # 在容器內建立一個 /app 資料夾，並切換到該資料夾
 WORKDIR /app
