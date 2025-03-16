@@ -77,7 +77,12 @@ pipeline {
 }
 
 def runDockerTest(envName) {
-    def HOST_WORKSPACE = sh(script: "docker inspect jenkins | grep Source | awk -F'\"' '{print \$4}'", returnStdout: true).trim() + "/workspace/${JOB_NAME}"
+    def HOST_WORKSPACE = sh(
+    script: """
+        docker inspect jenkins | grep '"Source"' | grep 'jenkins_home' | awk -F'\"' '{print \$4}'
+    """,
+    returnStdout: true
+    ).trim() + "/workspace/${JOB_NAME}"
     sh """
         echo "Running tests in ${envName}..."
         echo "HOST_WORKSPACE:${HOST_WORKSPACE},WORKSPACE:${WORKSPACE}"
