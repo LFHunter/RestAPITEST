@@ -6,6 +6,7 @@ WORKDIR /app
 
 # 将应用代码复制到镜像中（根据需要修改）
 COPY . /app/
+RUN ls -l
 
 ENV DEBIAN_FRONTEND=noninteractive
 ENV PYTHONPATH=/app
@@ -22,6 +23,6 @@ RUN pip3 install -r requirements.txt
 
 # 默认命令（根据需要修改）
 # CMD pytest --html=MarketstackAPITest_Proj/report.html MarketstackAPITest_Proj/Testcases/test_historical_api.py
-CMD pytest --alluredir=reports MarketstackAPITest_Proj/Testcases/test_historical_api.py
+CMD ls -l && pytest --alluredir=reports MarketstackAPITest_Proj/Testcases/test_historical_api.py
 
 
