@@ -11,6 +11,7 @@ pipeline {
     stages {
         stage('Clean Workspace') {
             steps {
+                sh 'rm -rf .pytest_cache'
                 script {
                     deleteDir()
                 }
