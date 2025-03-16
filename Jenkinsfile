@@ -80,7 +80,8 @@ def runDockerTest(envName) {
     def HOST_WORKSPACE = sh(script: "docker inspect jenkins | grep Source | awk -F'\"' '{print \$4}'", returnStdout: true).trim() + "/workspace/${JOB_NAME}"
     sh """
         echo "Running tests in ${envName}..."
-        mkdir -p ${HOST_WORKSPACE}/${CONTAINER_REPORTS}/${envName}
+        echo "HOST_WORKSPACE:${HOST_WORKSPACE},WORKSPACE:${WORKSPACE}"
+        mkdir -p ${WORKSPACE}/${CONTAINER_REPORTS}/${envName}
         pwd
         ls -l
         chmod -R 777 ${WORKSPACE}
