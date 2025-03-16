@@ -13,6 +13,11 @@ pipeline {
             steps {
                 sh 'rm -rf .pytest_cache'
                 script {
+                     sh '''
+                        chown -R $(id -u):$(id -g) .pytest_cache || true
+                        chmod -R u+w .pytest_cache || true
+                        rm -rf .pytest_cache || true
+                    '''
                     deleteDir()
                 }
             }
