@@ -27,6 +27,8 @@ pipeline {
         stage('Build Docker Image') {
             steps {
                 script {
+                    sh 'pwd'
+                    sh 'ls -l'
                     sh "docker build -t ${IMAGE_NAME} ."
                 }
             }
@@ -36,7 +38,6 @@ pipeline {
             parallel {
                 stage('Test Env 1') {
                     steps {
-                        sh 'pwd'
                         script {
                             runDockerTest("env1")
                         }
@@ -78,10 +79,12 @@ pipeline {
 def runDockerTest(envName) {
     sh """
         echo "Running tests in ${envName}..."
-        mkdir -p ${CONTAINER_REPORTS}/${envName}
+        mkdir -p ${WORKSPACE}/${CONTAINER_REPORTS}/${envName}
+        pwd
+        ls -l
         docker run --rm \
-            -v ${pwd}:/app \
-            -v ${pwd}/${CONTAINER_REPORTS}/${envName}:/app/reports \
+            -v ${WORKSPACE}:/app \
+            -v ${WORKSPACE}/${CONTAINER_REPORTS}/${envName}:/app/reports \
             ${IMAGE_NAME}
 
         echo "Tests in ${envName} completed."

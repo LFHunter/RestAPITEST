@@ -6,7 +6,7 @@ WORKDIR /app
 
 # 将应用代码复制到镜像中（根据需要修改）
 COPY . /app/
-RUN ls -l
+RUN ls -l /app/
 
 ENV DEBIAN_FRONTEND=noninteractive
 
