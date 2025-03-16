@@ -82,6 +82,7 @@ def runDockerTest(envName) {
         mkdir -p ${WORKSPACE}/${CONTAINER_REPORTS}/${envName}
         pwd
         ls -l
+        chmod -R 777 ${WORKSPACE}
         docker run --rm \
             -v ${WORKSPACE}:/app \
             -v ${WORKSPACE}/${CONTAINER_REPORTS}/${envName}:/app/reports \
