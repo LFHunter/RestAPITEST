@@ -9,7 +9,7 @@ COPY . /app/
 RUN ls -l
 
 ENV DEBIAN_FRONTEND=noninteractive
-ENV PYTHONPATH=/app
+
 
 
 LABEL maintainer="aaaa_email@example.com"
@@ -23,6 +23,8 @@ RUN pip3 install -r requirements.txt
 
 # 默认命令（根据需要修改）
 # CMD pytest --html=MarketstackAPITest_Proj/report.html MarketstackAPITest_Proj/Testcases/test_historical_api.py
-CMD ls -l && pytest --alluredir=reports MarketstackAPITest_Proj/Testcases/test_historical_api.py
+ENV PYTHONPATH=/app
+CMD ls /app
+CMD pwd && ls -l && pytest --alluredir=reports MarketstackAPITest_Proj/Testcases/test_historical_api.py
 
 

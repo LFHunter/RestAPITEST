@@ -36,6 +36,7 @@ pipeline {
             parallel {
                 stage('Test Env 1') {
                     steps {
+                        sh 'pwd'
                         script {
                             runDockerTest("env1")
                         }
