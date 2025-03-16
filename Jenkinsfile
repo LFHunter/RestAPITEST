@@ -1,108 +1,92 @@
 pipeline {
-    agent { label 'MasterNode' }
+    agent any
+
     environment {
-        PYTHON_VERSION = '3.12'
-        VENV_PATH = 'venv'
+        REPO_URL = "https://github.com/LFHunter/RestAPITEST.git"
+        IMAGE_NAME = "api-test-env"
+        CONTAINER_REPORTS = "allure-reports"
     }
 
     stages {
-        stage('Checkout Repository') {
+        stage('Clean Workspace') {
             steps {
-                echo '===== Cleaning old workspace ====='
-                deleteDir()  // 清空 workspace
-                echo '===== Pulling Repository ====='
-                git branch: 'main', url: 'https://github.com/LFHunter/RestAPITEST.git'
-                sh 'ls -lah'
+                script {
+                    deleteDir()
+                }
             }
         }
-        stage('Setup and Run Tests') {
+
+        stage('Checkout Code') {
+            steps {
+                script {
+                    git branch: 'main', url: REPO_URL
+                }
+            }
+        }
+
+        stage('Build Docker Image') {
+            steps {
+                script {
+                    sh "docker build -t ${IMAGE_NAME} ."
+                }
+            }
+        }
+
+        stage('Run API Tests in Parallel') {
             parallel {
-                stage('Test 1') {
-                    agent { docker { image "python:${env.PYTHON_VERSION }"
-                    args "-v $WORKSPACE:$WORKSPACE" } }
+                stage('Test Env 1') {
                     steps {
-                        // sh 'apt-get update && apt-get install -y git'
-                        // echo '=====Pull Repository====='
-                        // echo "${env.WORKSPACE}"
-                        // dir("${env.WORKSPACE}") {
-                        // git branch: 'main', url: 'https://github.com/LFHunter/RestAPITEST.git'
-                        // }
-                        dir(env.WORKSPACE) {
-                            sh 'ls -lah'
-                        }
                         script {
-                            setupPyEnv(env.VENV_PATH)
-                            runPytest()
+                            runDockerTest("env1")
                         }
                     }
                 }
-                stage('Test 2') {
-                    agent { docker { image "python:${env.PYTHON_VERSION }"
-                    args "-v $WORKSPACE:$WORKSPACE" } }
+                stage('Test Env 2') {
                     steps {
-                        // sh 'apt-get update && apt-get install -y git'
-                        // echo '=====Pull Repository====='
-                        // echo "${env.WORKSPACE}"
-                        // dir("${env.WORKSPACE}") {
-                        // git branch: 'main', url: 'https://github.com/LFHunter/RestAPITEST.git'
-                        // }
-                        dir(env.WORKSPACE) {
-                            sh 'ls -lah'
-                        }
                         script {
-                            setupPyEnv(env.VENV_PATH)
-                            runPytest()
+                            runDockerTest("env2")
                         }
                     }
                 }
-                stage('Test 3') {
-                    agent { docker { image "python:${env.PYTHON_VERSION }"
-                    args "-v $WORKSPACE:$WORKSPACE" } }
+                stage('Test Env 3') {
                     steps {
-                        // sh 'apt-get update && apt-get install -y git'
-                        // echo '=====Pull Repository====='
-                        // echo "${env.WORKSPACE}"
-                        // dir("${env.WORKSPACE}") {
-                        // git branch: 'main', url: 'https://github.com/LFHunter/RestAPITEST.git'
-                        // }
-                        dir(env.WORKSPACE) {
-                            sh 'ls -lah'
-                        }
                         script {
-                            setupPyEnv(env.VENV_PATH)
-                            runPytest()
+                            runDockerTest("env3")
                         }
                     }
                 }
             }
         }
+
+        stage('Generate Allure Report') {
+            steps {
+                script {
+                    sh "allure generate ${CONTAINER_REPORTS} -o allure-report --clean"
+                }
+            }
+        }
+
         stage('Publish Allure Report') {
             steps {
-                allure includeProperties: false, jdk: '', results: [[path: 'reports/allure_results']]
+                allure includeProperties: false, jdk: '', results: [[path: 'allure-report']]
             }
         }
     }
-
-    post {
-        always {
-            echo 'All tests completed.'
-        }
-    }
 }
 
-def setupPyEnv(venvpath) {
+def runDockerTest(envName) {
     sh """
-      echo ====Setting up Env =====
-      python3 -m venv ${venvpath}
-      source ${venvpath}/bin/activate
-      mkdir -p reports/allure_results
-      pip3 install -r requirements.txt
+        echo "Running tests in ${envName}..."
+
+
+        mkdir -p ${CONTAINER_REPORTS}/${envName}
+
+
+        docker run --rm \
+            -v ${pwd}:/app \   # 掛載 Jenkins 拉取的代碼到 Docker 容器
+            -v ${pwd}/${CONTAINER_REPORTS}/${envName}:/app/reports \
+            ${IMAGE_NAME}
+
+        echo "Tests in ${envName} completed."
     """
-}
-def runPytest() {
-    sh '''
-           mkdir -p reports/allure_results
-           pytest MarketstackAPITest_Proj/Testcases/test_historical_api.py \
-           --alluredir=reports/allure_results
-    '''
 }
